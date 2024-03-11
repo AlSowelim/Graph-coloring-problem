@@ -13,7 +13,7 @@ public class Main {
 
         System.out.println("Enter the colours domain: ");
         for (int j = 1; j <= numOfcolours; j++) {
-            colours.add(kb.next());
+            colours.add(j,kb.nextLine());
         }
 
         System.out.println("How many variables you want to add? ");
