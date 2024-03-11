@@ -12,7 +12,7 @@ public class Main {
         int numOfcolours = kb.nextInt();
 
         System.out.println("Enter the colours domain: ");
-        for (int j = 1; j <= numOfcolours; j++) {
+        for (int j = 0; j < numOfcolours; j++) {
             colours.add(j,kb.nextLine());
         }
 
