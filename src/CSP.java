@@ -3,9 +3,11 @@ import java.util.*;
 class CSP {
 //public LinkedList<String> domain;
 public LinkedList<Variable> variables;
+public Stack<Variable>log;// a small version control for the variables to use it in forward checking
 
     public CSP() {
         this.variables = new LinkedList<Variable>();
+        this.log=new Stack<Variable>();
     }
 
     //This method for adding new vertex to the variables list
@@ -20,7 +22,6 @@ public LinkedList<Variable> variables;
     {
         int size= variables.size();
         int size_for_parameter=d.size();
-        variables.getFirst();
         for (Variable v1 : variables) {
             for (int j = 0; size_for_parameter > j; j++) {
                 v1.domain.add(d.get(j));
@@ -31,7 +32,8 @@ public LinkedList<Variable> variables;
 
     // Letting the user add the adjacency between the variables.
     public void setAdj(Variable var1, Variable var2){
-            var1.adjacent.add(var2);
+        var1.adjacent.add(var2);
+        var2.adjacent.add(var1);//MS
     }
 
     // helper methode for serAdj.
@@ -98,19 +100,24 @@ public LinkedList<Variable> variables;
 
 
 //forward checking will reduce complexity due to deleting values from the domain of the variable
-public boolean forwardChecking( Variable v, boolean gate) { //using gate boolean variable to create a virtual
+public boolean forwardChecking( Variable v, boolean gate,Stack <Variable> log) { //using gate boolean variable to create a virtual
     String chosen_color = v.chosen_color;                    //  assignment to be able to backtrack
     PriorityQueue<String>virtualDomain=new PriorityQueue<>();
     if (chosen_color == null)
         return false;//to check variable  has chosen a color to be able to forward_check
-
     for (Variable neighbor : v.adjacent)//iteration over the adjacent nodes to our variable
     {
         if (gate) {//gate behave as gate to non-virtual assignment
-            if (neighbor.domain.contains(chosen_color)) {
+            if (neighbor.domain.contains(chosen_color))
+            {
+               Variable Archive= Assignment.copying_variable(neighbor);
+                log.push(Archive);//saving the variable if we ever need to backtrack
                 neighbor.domain.remove(chosen_color);
                 if (neighbor.domain.isEmpty())
+                {
+                    log.push(new Variable("end_round"));
                     return false;
+                }
             }
         }
         else
@@ -120,10 +127,13 @@ public boolean forwardChecking( Variable v, boolean gate) { //using gate boolean
             {
                 virtualDomain.remove(chosen_color);
                 if (virtualDomain.isEmpty())
+                {
                     return false;
+                }
             }
         }
     }
+    log.push(new Variable("end_round"));
     return true;
 }
 
@@ -142,6 +152,8 @@ public boolean forwardChecking( Variable v, boolean gate) { //using gate boolean
     }
     private Variable who_higher_Deg(Variable v1, Variable v2)
     {
+        if (v1==null||v2==null)
+            return null;
        return (v1.adjacent.size()>v2.adjacent.size())?v1:v2;
     }
 // applying mrv technique to choose the correct variable
@@ -163,6 +175,16 @@ public boolean forwardChecking( Variable v, boolean gate) { //using gate boolean
 
     }
 
+
+    public void printSol()
+    {
+        int size=variables.size();
+        for (Variable v1: variables)
+        {
+            System.out.println(v1.name+" color is : "+v1.chosen_color+" ");
+        }
+    }
+
     private boolean allVariablesAssigned() {
         for (Variable variable : variables) {
             if (variable.chosen_color == null) {
@@ -174,7 +196,7 @@ public boolean forwardChecking( Variable v, boolean gate) { //using gate boolean
 
     private boolean isValueConsistent(Variable variable, String value) {
         for (Variable adjacentVariable : variable.adjacent) {
-            if (adjacentVariable.chosen_color.equals(value)) {//tbc
+            if (adjacentVariable.chosen_color!=null && adjacentVariable.chosen_color.equals(value)) {//tbc
                 return false; // If the assigned color is the same as the value, it violates the constraint
             }
         }
@@ -182,27 +204,63 @@ public boolean forwardChecking( Variable v, boolean gate) { //using gate boolean
     }
 
     public boolean backtracking() {
-        return backtrack(this);
+        return backtrack(this ,true);
     }
 
-    private boolean backtrack(CSP csp) {
+    private boolean backtrack(CSP csp,boolean flag) {
+        boolean result = false;
         if (csp.allVariablesAssigned()) {
             return true; // If all variables are assigned, a solution is found
         }
-        Variable variable = csp.mrv(); // Choose the next variable using MRV heuristic
+        Variable variable;
+        if (flag){//we used the flag to use the highest degree to reduce time complexity
+            variable=highestDegree();
+            flag=false;
+        }
+        else
+        {
+            variable = csp.mrv(); // Choose the next variable using MRV heuristic
+        }
         applyLCVToAll();
+
         for (String value : variable.domain) {
             if (csp.isValueConsistent(variable, value)) {
                 variable.chosen_color = value; // Assign the value to the variable
-                if (csp.forwardChecking(variable, true)) { // Forward checking
-                    if (backtrack(csp)) { // Recursively backtrack
-                        return true;
-                    }
+                if (csp.forwardChecking(variable, false,log))
+                { // Forward checking
+                   csp.forwardChecking(variable,true,log);
+                    result=backtrack(csp, flag);
                 }
-                variable.chosen_color = null; // Unassign the value if solution not found
+                if (result)
+                    return result;
+                else
+                {
+                    reForward_checking();
+                    variable.chosen_color = null; // Unassigned the value if solution not found
+
+                }
             }
         }
         return false; // If no solution found
+    }
+    private void reForward_checking()
+    {
+        Variable archieve=log.pop();
+        if (archieve!=null)
+        {
+            while (!(archieve.name.equalsIgnoreCase("end")))
+            {
+                for(Variable v:variables)
+                {
+                    if (v.name.equalsIgnoreCase(archieve.name))
+                    {
+                        v.domain.clear();
+                        v.domain.addAll(archieve.domain);
+                    }
+                }
+                archieve=log.pop();
+            }
+        }
     }
 
 }
@@ -462,6 +520,75 @@ public class TreeDecomposition {
             }
             System.out.println();
         }
+    }
+}
+ */
+/*
+import java.util.Scanner;
+
+public class Backtracking {
+
+    static int N; // size of the board
+    static int[][] board; // chessboard
+    static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        System.out.print("Enter the size of the board: ");
+        N = scanner.nextInt();
+        board = new int[N][N];
+        solve(0);
+        System.out.println("No solution found!");
+    }
+
+    static boolean solve(int col) {
+        if (col >= N) { // all queens are placed
+            printSolution();
+            return true;
+        }
+        for (int i = 0; i < N; i++) {
+            if (isSafe(i, col)) {
+                board[i][col] = 1; // place queen
+                if (solve(col + 1)) {
+                    return true;
+                }
+                board[i][col] = 0; // backtrack
+            }
+        }
+        return false;
+    }
+
+    static boolean isSafe(int row, int col) {
+        int i, j;
+
+        // Check this row on left side
+        for (i = 0; i < col; i++)
+            if (board[row][i] == 1)
+                return false;
+
+        // Check upper diagonal on left side
+        for (i = row, j = col; i >= 0 && j >= 0; i--, j--)
+            if (board[i][j] == 1)
+                return false;
+
+        // Check lower diagonal on left side
+        for (i = row, j = col; j >= 0 && i < N; i++, j--)
+            if (board[i][j] == 1)
+                return false;
+
+        return true;
+    }
+
+    static void printSolution() {
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                System.out.print(board[i][j] + " ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+        System.out.println("Press Enter to continue...");
+        scanner.nextLine(); // wait for Enter press
+        scanner.nextLine(); // this is necessary to wait for the Enter key press before continuing
     }
 }
  */

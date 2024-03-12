@@ -7,7 +7,7 @@ public class Assignment {
         this.setOfSolution = new LinkedList<>();
     }
 
-    private Variable copying_variable(Variable v)
+    public static Variable copying_variable(Variable v)
     {
         Variable v1 = new Variable(v.name);
         v1.adjacent.addAll(v.adjacent);

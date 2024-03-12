@@ -9,14 +9,13 @@ public class Main {
         System.out.println("Welcome to Graph-coloring Program!");
         System.out.println("**************************************************");
         System.out.println("How many colours are there in the domain? ");
-        int numOfcolours = kb.nextInt();
+        int numOfColours = kb.nextInt();
 
         System.out.println("Enter the colours domain: ");
         kb.nextLine();
-        for (int j = 0; j < numOfcolours; j++) {
+        for (int j = 0; j < numOfColours; j++) {
             colours.add(j,kb.nextLine());
         }
-
         System.out.println("How many variables you want to add? ");
         int numOfVar = kb.nextInt();
 
@@ -24,6 +23,18 @@ public class Main {
             System.out.println("Please enter the name of the variable number " + i + ":");
             String name = kb.next();
             graph.addVar(name);
+        }
+        graph.domain_initializer(colours);
+        // Letting the user define the adjacency.
+        for(int i = 0; i < numOfVar; i++) {
+            System.out.println("How many adjacent variables for (" + graph.variables.get(i).name + ")?");
+            int numOfAdjVar = kb.nextInt();
+            for (int j = 0; j < numOfAdjVar; j++) {
+                System.out.println("What is the adjacent variables of (" + graph.variables.get(i).name + ")?");
+                graph.printWithout(graph.variables.get(i).name);
+                String varName = kb.next();
+                graph.setAdj(graph.variables.get(i), graph.getVarByName(varName));
+            }
         }
 
         do {
@@ -35,22 +46,16 @@ public class Main {
             wayChosen = kb.nextInt();
 
             if (wayChosen == 1) {
-                ////////////////////////////////
+                if (graph.backtracking()){
+                    graph.printSol();
+                }
+
             } else if (wayChosen == 2) {
                 ////////////////////////////////
             } else
                 System.out.println("Wrong input!! ");
 
         } while (wayChosen != 1 || wayChosen != 2);
-
-
-        // Letting the user define the adjacency.
-        for(int i = 0; i < numOfVar; i++){
-            System.out.println("What is the adjacent variables of (" + graph.variables.get(i).name + ")?");
-            graph.printWithout(graph.variables.get(i).name);
-            String varName = kb.next();
-            graph.setAdj(graph.variables.get(i), graph.getVarByName(varName));
-        }
 
     }
 }
