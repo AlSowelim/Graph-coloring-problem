@@ -3,7 +3,7 @@ public class Main {
     public static  void main(String[] args) {
         Scanner kb = new Scanner(System.in);
         CSP graph = new CSP();
-        LinkedList<String> colours = null;
+        LinkedList<String> colours = new LinkedList<>();
         int wayChosen;
 
         System.out.println("Welcome to Graph-coloring Program!");
@@ -12,6 +12,7 @@ public class Main {
         int numOfcolours = kb.nextInt();
 
         System.out.println("Enter the colours domain: ");
+        kb.nextLine();
         for (int j = 0; j < numOfcolours; j++) {
             colours.add(j,kb.nextLine());
         }
@@ -20,7 +21,7 @@ public class Main {
         int numOfVar = kb.nextInt();
 
         for (int i = 1; i <= numOfVar; i++) {
-            System.out.println("Please enter the name of the " + i + " varible: ");
+            System.out.println("Please enter the name of the variable number " + i + ":");
             String name = kb.next();
             graph.addVar(name);
         }
