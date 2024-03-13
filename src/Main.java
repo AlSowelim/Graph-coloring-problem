@@ -1,17 +1,12 @@
 import java.util.*;      
 public class Main {
-    public static  void main(String[] args) {
+    public static void main(String[] args) {
         Scanner kb = new Scanner(System.in);
         CSP graph = new CSP();
         LinkedList<String> colours = new LinkedList<>();
-        int wayChosen;
-        int numOfColours = 0;
-        int numOfVar = 0;
-        int numOfAdjVar = 0;
-        boolean numOfColFlag = false;
-        boolean numOfVarFlag = false;
-        boolean numOfAdjFlag = false;
+        int wayChosen, numOfColours=0, numOfVar=0, numOfAdjVar=0 ;
 
+        boolean numOfColFlag = false, numOfVarFlag=false ,numOfAdjFlag= false;
 
         while (!numOfColFlag) {
             System.out.println("**************************************************");
@@ -28,12 +23,12 @@ public class Main {
                 kb.next();
             }
         }
-        
+
         System.out.println("Enter the colours domain: ");
         kb.nextLine();
         for (int j = 0; j < numOfColours; j++) {
-            System.out.print((j+1)+"-");
-            colours.add(j,kb.nextLine());
+            System.out.print((j + 1) + "-");
+            colours.add(j, kb.nextLine());
         }
 
 
@@ -56,7 +51,7 @@ public class Main {
 
         for (int i = 1; i <= numOfVar; i++) {
             System.out.println("Please enter the name of the variable number " + i + ":");
-            System.out.print(i+"-");
+            System.out.print(i + "-");
             String name = kb.next();
             graph.addVar(name);
         }
@@ -88,46 +83,58 @@ public class Main {
             // Iterating through adjacent variables
             for (int j = 0; j < numOfAdjVar; j++) {
                 System.out.println("What is the adjacent variable of (" + graph.variables.get(i).name + ")?");
+                System.out.print("Variable list: ");
                 graph.printWithout(graph.variables.get(i).name);
                 System.out.println("");
                 System.out.println("");
-                String varName = kb.next();
-                if (graph.variables.get(i).adjacent.contains(graph.getVarByName(varName)))
-                {
-                    System.out.println("already in");
-                }
-                else
-                {
-                    graph.setAdj(graph.variables.get(i), graph.getVarByName(varName));
+                String varName = "null";
+                boolean flag = false;
+                try {
+                    varName = kb.next();
+                    Variable v1 = graph.getVarByName(varName);
+                    if (v1 == null)//
+                        throw new InputMismatchException();
+                } catch (Exception e) {
+                    flag = true;
+                    while (flag) {
+                        System.out.println(varName + " dose not exist. Please Enter a valid variable name:");
+                        System.out.print("Variable list: ");
+                        graph.printWithout(graph.variables.get(i).name);
+                        varName = kb.next();
+                        Variable v1 = graph.getVarByName(varName);
+                        if (v1 != null) {
+                            flag = false;
+                        }
+                    }
                 }
 
+                if (graph.variables.get(i).adjacent.contains(graph.getVarByName(varName))) {
+                    System.out.println("already in");
+
+                } else {
+                    graph.setAdj(graph.variables.get(i), graph.getVarByName(varName));
+                }
             }
         }
 
-
-
-
-
-        do {
-            System.out.println("");
+        while (true) {
             System.out.println("**************************************************");
-            System.out.println("Which way would you like to solve this problem with? ");
-            System.out.println("1. Backtracking.");
-            System.out.println("2. Tree Decomposition.");
-            wayChosen = kb.nextInt();
+            System.out.println("Ready to get the solution?\nType '1' to get it!");
+            String SolInput = kb.next();
 
-            if (wayChosen == 1) {
-                if (graph.backtracking()){
+            if (SolInput.equals("1")) {
+                if (graph.backtracking()) {
                     System.out.println("======= The Solution =======");
                     graph.printSol();
+                } else {
+                    System.out.println("No Solution!");
                 }
-
-            } else if (wayChosen == 2) {
-                ////////////////////////////////
-            } else
-                System.out.println("Wrong input!! ");
-
-        } while (wayChosen != 1 || wayChosen != 2);
-
+                System.out.println("Solution retrieved!");
+                break; // Exit the loop as '1' is entered
+            } else {
+                System.out.println("Wrong input! Try again..");
+                System.out.println("**************************************************");
+            }
+        }
     }
 }

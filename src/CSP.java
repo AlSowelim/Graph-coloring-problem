@@ -241,7 +241,12 @@ public boolean forwardChecking( Variable v, boolean gate,Stack <Variable> log) {
                     return result;
                 else
                 {
-                    reForward_checking();
+                    try {
+                        reForward_checking();
+                    }catch (Exception e)
+                    {
+                        return false;
+                    }
                     variable.chosen_color = null; // Unassigned the value if solution not found
 
                 }
@@ -257,22 +262,30 @@ public boolean forwardChecking( Variable v, boolean gate,Stack <Variable> log) {
         v1.chosen_color=v.chosen_color;
         return v1;
     }
-    private void reForward_checking()
+    private void reForward_checking() throws Exception
     {
         Variable archieve=log.pop();
         if (archieve!=null)
         {
 
             do{
-                for(Variable v:variables)
+                if (!(archieve.name.equalsIgnoreCase("end")))
                 {
-                    if (v.name.equalsIgnoreCase(archieve.name))
+                    for(Variable v:variables)
                     {
-                        v.domain.clear();
-                        v.domain.addAll(archieve.domain);
+                        if (v.name.equalsIgnoreCase(archieve.name))
+                        {
+                            v.domain.clear();
+                            v.domain.addAll(archieve.domain);
+                        }
                     }
                 }
+                if (log.empty())
+                {
+                    throw new Exception("ReForward fails");
+                }
                 archieve=log.pop();
+
             }while (!(archieve.name.equalsIgnoreCase("end")));
         }
     }
