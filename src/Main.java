@@ -5,12 +5,24 @@ public class Main {
         CSP graph = new CSP();
         LinkedList<String> colours = new LinkedList<>();
         int wayChosen;
+        int numOfColours = 0;
+        boolean flag = false;
 
         System.out.println("Welcome to Graph-coloring Program!");
-        System.out.println("**************************************************");
-        System.out.println("How many colours are there in the domain? ");
-        int numOfColours = kb.nextInt();
-
+    
+        do { 
+            try {
+                System.out.println("**************************************************");
+                System.out.println("How many colours are there in the domain? ");
+                numOfColours = kb.nextInt();
+                flag = false;
+            } catch(InputMismatchException e){ 
+                System.out.println("Invalid input! Please enter an integer: ");
+                kb.nextLine(); // Clear the input buffer
+                numOfColours = kb.nextInt();
+            }
+        } while(flag);
+        
         System.out.println("Enter the colours domain: ");
         kb.nextLine();
         for (int j = 0; j < numOfColours; j++) {
