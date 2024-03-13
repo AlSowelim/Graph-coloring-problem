@@ -33,7 +33,14 @@ public class Main {
                 System.out.println("What is the adjacent variables of (" + graph.variables.get(i).name + ")?");
                 graph.printWithout(graph.variables.get(i).name);
                 String varName = kb.next();
+                if (graph.variables.get(i).adjacent.contains(graph.getVarByName(varName)))
+                {
+                    System.out.println("already in");
+                }
+                else
+                {
                 graph.setAdj(graph.variables.get(i), graph.getVarByName(varName));
+                }
             }
         }
 

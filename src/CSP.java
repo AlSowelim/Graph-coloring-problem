@@ -68,8 +68,10 @@ public Stack<Variable>log;// a small version control for the variables to use it
 
         // Count how many times each color appears in the domain of adjacent variables
         for (Variable adjacentVariable : variable.adjacent) {
+            if (adjacentVariable.chosen_color==null){
             for (String color : adjacentVariable.domain) {
                 colorConstraints.put(color, colorConstraints.getOrDefault(color, 0) + 1);
+            }
             }
         }
 
@@ -94,7 +96,9 @@ public Stack<Variable>log;// a small version control for the variables to use it
     // Method to apply LCV sorting to all variables
     public void applyLCVToAll() {
         for (Variable variable : this.variables) {
-            sortDomainByLCV(variable);
+            if (variable.chosen_color==null) {
+                sortDomainByLCV(variable);
+            }
         }
     }
 
@@ -131,9 +135,12 @@ public boolean forwardChecking( Variable v, boolean gate,Stack <Variable> log) {
                     return false;
                 }
             }
+            virtualDomain.clear();
         }
     }
+    if (gate){//we assure that the end round node doesn't get pushed until the gate is open
     log.push(new Variable("end_round"));
+    }
     return true;
 }
 
@@ -162,13 +169,13 @@ public boolean forwardChecking( Variable v, boolean gate,Stack <Variable> log) {
         Variable minimum=null;
         for (Variable v1: variables)
         {
-            if (minimum==null||v1.domain.size()<minimum.domain.size())
+            if (v1.chosen_color==null)
             {
-                minimum=v1;
-            }
-            else if (v1.domain.size()==minimum.domain.size())
-            {//now we apply degree heuristic
-                minimum=who_higher_Deg(v1,minimum);
+                if (minimum == null || v1.domain.size() < minimum.domain.size()) {
+                    minimum = v1;
+                } else if (v1.domain.size() == minimum.domain.size()) {//now we apply degree heuristic
+                    minimum = who_higher_Deg(v1, minimum);
+                }
             }
         }
         return minimum;
@@ -248,8 +255,8 @@ public boolean forwardChecking( Variable v, boolean gate,Stack <Variable> log) {
         Variable archieve=log.pop();
         if (archieve!=null)
         {
-            while (!(archieve.name.equalsIgnoreCase("end")))
-            {
+
+            do{
                 for(Variable v:variables)
                 {
                     if (v.name.equalsIgnoreCase(archieve.name))
@@ -259,7 +266,7 @@ public boolean forwardChecking( Variable v, boolean gate,Stack <Variable> log) {
                     }
                 }
                 archieve=log.pop();
-            }
+            }while (!(archieve.name.equalsIgnoreCase("end")));
         }
     }
 
