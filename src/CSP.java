@@ -50,7 +50,7 @@ public Stack<Variable>log;// a small version control for the variables to use it
     public void printWithout(String name){
         for(Variable v1: variables){
             if(!(v1.name.equalsIgnoreCase(name))){
-                System.out.print(v1.name+" - ");
+                System.out.print(v1.name+"   ");
             }
         }
     }

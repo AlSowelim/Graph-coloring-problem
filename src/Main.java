@@ -6,45 +6,88 @@ public class Main {
         LinkedList<String> colours = new LinkedList<>();
         int wayChosen;
         int numOfColours = 0;
-        boolean flag = false;
+        int numOfVar = 0;
+        int numOfAdjVar = 0;
+        boolean numOfColFlag = false;
+        boolean numOfVarFlag = false;
+        boolean numOfAdjFlag = false;
 
-        System.out.println("Welcome to Graph-coloring Program!");
-    
-        do { 
-            try {
-                System.out.println("**************************************************");
-                System.out.println("How many colours are there in the domain? ");
+
+        while (!numOfColFlag) {
+            System.out.println("**************************************************");
+            System.out.println("How many colours are there in the domain? ");
+            if (kb.hasNextInt()) {
                 numOfColours = kb.nextInt();
-                flag = false;
-            } catch(InputMismatchException e){ 
-                System.out.println("Invalid input! Please enter an integer: ");
-                kb.nextLine(); // Clear the input buffer
-                numOfColours = kb.nextInt();
+                if (numOfColours > 0) {
+                    numOfColFlag = true;
+                } else {
+                    System.out.println("Invalid input. Please enter a positive integer.");
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a positive integer.");
+                kb.next();
             }
-        } while(flag);
+        }
         
         System.out.println("Enter the colours domain: ");
         kb.nextLine();
         for (int j = 0; j < numOfColours; j++) {
+            System.out.print((j+1)+"-");
             colours.add(j,kb.nextLine());
         }
-        System.out.println("**************************************************");
-        System.out.println("How many variables you want to add? ");
-        int numOfVar = kb.nextInt();
+
+
+        while (!numOfVarFlag) {
+            System.out.println("**************************************************");
+            System.out.println("How many variables you want to add? ");
+            if (kb.hasNextInt()) {
+                numOfVar = kb.nextInt();
+                if (numOfVar > 0) {
+                    numOfVarFlag = true;
+                } else {
+                    System.out.println("Invalid input. Please enter a positive integer.");
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a positive integer.");
+                kb.next(); // clear the invalid input
+            }
+        }
+
 
         for (int i = 1; i <= numOfVar; i++) {
             System.out.println("Please enter the name of the variable number " + i + ":");
+            System.out.print(i+"-");
             String name = kb.next();
             graph.addVar(name);
         }
         graph.domain_initializer(colours);
         System.out.println("**************************************************");
-        // Letting the user define the adjacency.
-        for(int i = 0; i < numOfVar; i++) {
-            System.out.println("How many adjacent variables for (" + graph.variables.get(i).name + ")?");
-            int numOfAdjVar = kb.nextInt();
+
+
+        // Iterating through variables
+        for (int i = 0; i < numOfVar; i++) {
+            numOfAdjFlag = false; // Resetting flag for each variable
+            numOfAdjVar = 0;
+
+            // Prompting for the number of adjacent variables for the current variable
+            while (!numOfAdjFlag) {
+                System.out.println("How many adjacent variables for (" + graph.variables.get(i).name + ")?");
+                if (kb.hasNextInt()) {
+                    numOfAdjVar = kb.nextInt();
+                    if (numOfAdjVar > 0) {
+                        numOfAdjFlag = true;
+                    } else {
+                        System.out.println("Invalid input. Please enter a positive integer.");
+                    }
+                } else {
+                    System.out.println("Invalid input. Please enter a positive integer.");
+                    kb.next(); // clear the invalid input
+                }
+            }
+
+            // Iterating through adjacent variables
             for (int j = 0; j < numOfAdjVar; j++) {
-                System.out.println("What is the adjacent variables of (" + graph.variables.get(i).name + ")?");
+                System.out.println("What is the adjacent variable of (" + graph.variables.get(i).name + ")?");
                 graph.printWithout(graph.variables.get(i).name);
                 System.out.println("");
                 System.out.println("");
@@ -55,10 +98,15 @@ public class Main {
                 }
                 else
                 {
-                graph.setAdj(graph.variables.get(i), graph.getVarByName(varName));
+                    graph.setAdj(graph.variables.get(i), graph.getVarByName(varName));
                 }
+
             }
         }
+
+
+
+
 
         do {
             System.out.println("");
@@ -70,6 +118,7 @@ public class Main {
 
             if (wayChosen == 1) {
                 if (graph.backtracking()){
+                    System.out.println("======= The Solution =======");
                     graph.printSol();
                 }
 
