@@ -2,9 +2,8 @@ import java.util.*;
 
 class CSP {
 //public LinkedList<String> domain;
-public LinkedList<Variable> variables;
+public LinkedList<Variable> variables;//f
 public Stack<Variable>log;// a small version control for the variables to use it in forward checking
-
     public CSP() {
         this.variables = new LinkedList<Variable>();
         this.log=new Stack<Variable>();
@@ -114,7 +113,7 @@ public boolean forwardChecking( Variable v, boolean gate,Stack <Variable> log) {
         if (gate) {//gate behave as gate to non-virtual assignment
             if (neighbor.domain.contains(chosen_color))
             {
-               Variable Archive= Assignment.copying_variable(neighbor);
+               Variable Archive=copying_variable(neighbor);
                 log.push(Archive);//saving the variable if we ever need to backtrack
                 neighbor.domain.remove(chosen_color);
                 if (neighbor.domain.isEmpty())
@@ -250,6 +249,14 @@ public boolean forwardChecking( Variable v, boolean gate,Stack <Variable> log) {
         }
         return false; // If no solution found
     }
+    public  Variable copying_variable(Variable v)
+    {
+        Variable v1 = new Variable(v.name);
+        v1.adjacent.addAll(v.adjacent);
+        v1.domain.addAll(v.domain);
+        v1.chosen_color=v.chosen_color;
+        return v1;
+    }
     private void reForward_checking()
     {
         Variable archieve=log.pop();
@@ -269,7 +276,6 @@ public boolean forwardChecking( Variable v, boolean gate,Stack <Variable> log) {
             }while (!(archieve.name.equalsIgnoreCase("end")));
         }
     }
-
 }
 
 
