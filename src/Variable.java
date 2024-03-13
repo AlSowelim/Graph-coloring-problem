@@ -2,7 +2,7 @@ import java.util.LinkedList;
 import java.util.PriorityQueue;
 public class Variable {
         public String name;
-        public  LinkedList <Variable> adjacent;
+        public LinkedList <Variable> adjacent;
         public PriorityQueue<String> domain;
         public String chosen_color;
 
