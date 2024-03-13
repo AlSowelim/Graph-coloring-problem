@@ -16,6 +16,7 @@ public class Main {
         for (int j = 0; j < numOfColours; j++) {
             colours.add(j,kb.nextLine());
         }
+        System.out.println("**************************************************");
         System.out.println("How many variables you want to add? ");
         int numOfVar = kb.nextInt();
 
@@ -25,6 +26,7 @@ public class Main {
             graph.addVar(name);
         }
         graph.domain_initializer(colours);
+        System.out.println("**************************************************");
         // Letting the user define the adjacency.
         for(int i = 0; i < numOfVar; i++) {
             System.out.println("How many adjacent variables for (" + graph.variables.get(i).name + ")?");
@@ -32,6 +34,8 @@ public class Main {
             for (int j = 0; j < numOfAdjVar; j++) {
                 System.out.println("What is the adjacent variables of (" + graph.variables.get(i).name + ")?");
                 graph.printWithout(graph.variables.get(i).name);
+                System.out.println("");
+                System.out.println("");
                 String varName = kb.next();
                 if (graph.variables.get(i).adjacent.contains(graph.getVarByName(varName)))
                 {
