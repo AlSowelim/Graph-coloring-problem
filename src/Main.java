@@ -1,55 +1,36 @@
-package solution;
-
 import java.util.*;
 import java.util.LinkedList;
 
-public class Main1 {
+public class Main {
     public static void main(String[] args) {
         Scanner kb = new Scanner(System.in);
         CSP graph = new CSP();
         LinkedList<String> colours = new LinkedList<>();
-        int wayChosen, numOfColours=0, numOfVar=0, numOfAdjVar=0 ;
+        int wayChosen, numOfColours = 0, numOfVar = 0, numOfAdjVar = 0;
 
-        boolean numOfColFlag = false, numOfVarFlag=false ,numOfAdjFlag= false;
 
-        while (!numOfColFlag) {
-            System.out.println("**************************************************");
-            System.out.println("How many colours are there in the domain? ");
-            if (kb.hasNextInt()) {
-                numOfColours = kb.nextInt();
-                if (numOfColours > 0) {
-                    numOfColFlag = true;
-                } else {
-                    System.out.println("Invalid input. Please enter a positive integer.");
-                }
-            } else {
-                System.out.println("Invalid input. Please enter a positive integer.");
-                kb.next();
-            }
+        System.out.println("**************************************************");
+        System.out.println("How many colours are there in the domain? ");
+        numOfColours = graph.inputValidation();
+        // ensuring that the number of colours is more than 0.
+        while(numOfColours == 0){
+            System.out.println("Number of colours can't be zero!\nPlease enter a valid number: ");
+            numOfColours = graph.inputValidation();
         }
 
         System.out.println("Enter the colours domain: ");
-        kb.nextLine();
         for (int j = 0; j < numOfColours; j++) {
             System.out.print((j + 1) + "-");
             colours.add(j, kb.nextLine());
         }
 
-
-        while (!numOfVarFlag) {
-            System.out.println("**************************************************");
-            System.out.println("How many variables you want to add? ");
-            if (kb.hasNextInt()) {
-                numOfVar = kb.nextInt();
-                if (numOfVar > 0) {
-                    numOfVarFlag = true;
-                } else {
-                    System.out.println("Invalid input. Please enter a positive integer.");
-                }
-            } else {
-                System.out.println("Invalid input. Please enter a positive integer.");
-                kb.next(); // clear the invalid input
-            }
+        System.out.println("**************************************************");
+        System.out.println("How many variables you want to add? ");
+        numOfVar = graph.inputValidation();
+        // ensuring that the number of variables is more than 0.
+        while(numOfVar == 0){
+            System.out.println("Number of variables can't be zero!\nPlease enter a valid number: ");
+            numOfVar = graph.inputValidation();
         }
 
 
@@ -65,32 +46,15 @@ public class Main1 {
 
         // Iterating through variables
         for (int i = 0; i < numOfVar; i++) {
-            numOfAdjFlag = false; // Resetting flag for each variable
-            numOfAdjVar = 0;
 
-            // Prompting for the number of adjacent variables for the current variable
-            while (!numOfAdjFlag) {
-                System.out.println("How many adjacent variables for (" + graph.variables.get(i).name + ")?");
-                if (kb.hasNextInt()) {
-                    numOfAdjVar = kb.nextInt();
-                    if (numOfAdjVar > 0) {
-                        numOfAdjFlag = true;
-                    } else {
-                        System.out.println("Invalid input. Please enter a positive integer.");
-                    }
-                } else {
-                    System.out.println("Invalid input. Please enter a positive integer.");
-                    kb.next(); // clear the invalid input
-                }
-            }
+            System.out.println("How many adjacent variables for (" + graph.variables.get(i).name + ")?");
+            numOfAdjVar = graph.inputValidation();
 
             // Iterating through adjacent variables
             for (int j = 0; j < numOfAdjVar; j++) {
                 System.out.println("What is the adjacent variable of (" + graph.variables.get(i).name + ")?");
                 System.out.print("Variable list: ");
                 graph.printWithout(graph.variables.get(i).name);
-                System.out.println("");
-                System.out.println("");
                 String varName = "null";
                 boolean flag = false;
                 try {
@@ -112,7 +76,8 @@ public class Main1 {
                     }
                 }
                 if (graph.variables.get(i).adjacent.contains(graph.getVarByName(varName))) {
-                    System.out.println("already in");
+                    System.out.println("Adjacency already included!");
+                    System.out.println();
 
                 } else {
                     graph.setAdj(graph.variables.get(i), graph.getVarByName(varName));
@@ -129,7 +94,6 @@ public class Main1 {
                 if (graph.backtracking()) {
                     System.out.println("======= The Solution =======");
                     graph.printSol();
-                    new Main2().displaySolutionAsGraph();
                 } else {
                     System.out.println("No Solution!");
                 }
