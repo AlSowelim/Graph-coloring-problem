@@ -1,3 +1,5 @@
+package solution;
+
 import java.util.*;
 
 class CSP {
@@ -103,7 +105,7 @@ public Stack<Variable>log;// a small version control for the variables to use it
 
 
 //forward checking will reduce complexity due to deleting values from the domain of the variable
-public boolean forwardChecking( Variable v, boolean gate,Stack <Variable> log) { //using gate boolean variable to create a virtual
+public boolean forwardChecking(Variable v, boolean gate, Stack <Variable> log) { //using gate boolean variable to create a virtual
     String chosen_color = v.chosen_color;                    //  assignment to be able to backtrack
     PriorityQueue<String>virtualDomain=new PriorityQueue<>();
     if (chosen_color == null)
@@ -254,7 +256,7 @@ public boolean forwardChecking( Variable v, boolean gate,Stack <Variable> log) {
         }
         return false; // If no solution found
     }
-    public  Variable copying_variable(Variable v)
+    public Variable copying_variable(Variable v)
     {
         Variable v1 = new Variable(v.name);
         v1.adjacent.addAll(v.adjacent);

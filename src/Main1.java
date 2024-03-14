@@ -1,5 +1,9 @@
-import java.util.*;      
-public class Main {
+package solution;
+
+import java.util.*;
+import java.util.LinkedList;
+
+public class Main1 {
     public static void main(String[] args) {
         Scanner kb = new Scanner(System.in);
         CSP graph = new CSP();
@@ -107,7 +111,6 @@ public class Main {
                         }
                     }
                 }
-
                 if (graph.variables.get(i).adjacent.contains(graph.getVarByName(varName))) {
                     System.out.println("already in");
 
@@ -126,6 +129,7 @@ public class Main {
                 if (graph.backtracking()) {
                     System.out.println("======= The Solution =======");
                     graph.printSol();
+                    new Main2().displaySolutionAsGraph();
                 } else {
                     System.out.println("No Solution!");
                 }
