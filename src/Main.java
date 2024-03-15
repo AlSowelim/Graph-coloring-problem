@@ -101,7 +101,6 @@ public class Main {
                 break; // Exit the loop as '1' is entered
             } else {
                 System.out.println("Wrong input! Try again..");
-                System.out.println("**************************************************");
             }
         }
     }
