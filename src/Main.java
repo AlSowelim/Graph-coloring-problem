@@ -1,6 +1,5 @@
 import java.util.*;
 import java.util.LinkedList;
-
 public class Main {
     public static void main(String[] args) {
         Scanner kb = new Scanner(System.in);
@@ -96,6 +95,7 @@ public class Main {
                     graph.printSol();
                 } else {
                     System.out.println("No Solution!");
+                    break;
                 }
                 System.out.println("Solution retrieved!");
                 break; // Exit the loop as '1' is entered

@@ -1,5 +1,3 @@
-package solution;
-
 import java.util.*;
 
 class CSP {
@@ -55,6 +53,26 @@ public Stack<Variable>log;// a small version control for the variables to use it
                 System.out.print(v1.name+"   ");
             }
         }
+    }
+
+    public int inputValidation() {
+        Scanner kb = new Scanner(System.in);
+        boolean flag = false;
+        int x = 0;
+        while (!flag) {
+            if (kb.hasNextInt()) {
+                x = kb.nextInt();
+                if (x >= 0) {
+                    flag = true;
+                } else {
+                    System.out.println("Invalid input. Please enter a positive integer.");
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a positive integer.");
+                kb.next();
+            }
+        }
+        return x;
     }
 
     // Method for sorting domain colors of a variable using the least constraining value heuristic
@@ -193,6 +211,7 @@ public boolean forwardChecking(Variable v, boolean gate, Stack <Variable> log) {
         }
     }
 
+
     private boolean allVariablesAssigned() {
         for (Variable variable : variables) {
             if (variable.chosen_color == null) {
@@ -292,8 +311,3 @@ public boolean forwardChecking(Variable v, boolean gate, Stack <Variable> log) {
         }
     }
 }
-
-
-
-
-
